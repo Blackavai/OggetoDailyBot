@@ -8,10 +8,10 @@ import NavBar from './NavBar.jsx';
 const App = () => {
     return (
         <>
-            <NavBar />
+            <Header />
             <Routes>
-                <Route path="/" element={<MainPage />} />
-                <Route path="/header" element={<Header />} />
+                <Route path="/" element={<NavBar />} />
+                <Route path="/main page" element={<MainPage />} />
                 <Route path="/users" element={<User />} />
                 <Route path="*" element={<h1>Ничего не найдено</h1>} />
             </Routes>

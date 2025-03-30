@@ -1,6 +1,7 @@
+import './style/header.css';
 function Header(){
     return(
-        <p>123</p>
+        <div className={'mainBlock'}></div>
     );
 }
 
