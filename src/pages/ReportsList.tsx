@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
+    // DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
+// import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 export function DialogDemo() {
@@ -47,13 +47,13 @@ export function DialogDemo() {
                     </div>
                     <div className="grid grid-cols-1 items-center gap-4">
                         <Label htmlFor="name" className="text-right">
-                            Комментарий сотрудника:
+                            Комментарии сотрудника:
                         </Label>
                         <p id="name" className="col-span-3">Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст </p>
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Принять отчёт</Button>
+                    <Button type="submit" variant={"yellow"}>Принять отчёт</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

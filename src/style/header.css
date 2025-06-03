@@ -8,7 +8,7 @@
 .mainBlock{
     width: 100%;
     height: 80px;
-    background-color: #fd0;
+    background-color: #FFED00;
     font-size: 18px;
 }
 
@@ -21,33 +21,57 @@
 
 .item_logo{
     grid-area: logo;
-    align-self: center;
-    justify-self: center;
+    /*align-self: center;*/
+    /*justify-self: center;*/
     margin-left: 20%;
+    background-color: white;
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+    margin-top: 10px; /* Отрицательный верхний отступ для смещения вниз */
+    border-radius: 30px 30px 0 0; /* Закругленные края */
+    img{
+        width: 100%;
+    }
 }
 
 .item_nav {
     grid-area: nav;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    /*align-items: center;*/
     width: 100%;
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 
 .item_nav a {
     flex: 1;
     text-align: center;
     text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: black;
+    transition: background-color 0.3s, color 0.3s; /* Плавный переход для фона и цвета */
+    margin-top: 10px; /* Отрицательный верхний отступ для смещения вниз */
+    border-radius: 20px 20px 0 0; /* Закругленные края */
+}
+
+.active {
+    font-weight: bold; /* Жирный шрифт для активной вкладки */
+    background-color: #ffffff; /* Цвет фона для активной вкладки */
+    color: black; /* Цвет текста для активной вкладки */
 }
 
 .item_auth{
     grid-area: auth;
     align-self: center;
     justify-self: end;
+    align-items: center;
     display: flex;
     margin-right: 10%;
+    margin-top: 10px;
 }
 
 .item_auth a {
@@ -55,6 +79,7 @@
     text-align: center;
     text-decoration: none;
     color: black;
+    margin-right: 20px;
 }
 
 .mainBlock img{
@@ -71,3 +96,5 @@
 .titlePage{
     text-align: center;
 }
+
+

@@ -20,7 +20,7 @@ export function DialogDemo() {
             <DialogTrigger asChild>
                 <img src={arrow} alt={"arrow right"} width={"60px"} className={"box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2)"}/>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[50%]">
+            <DialogContent className="sm:max-w-[40%]">
                 <DialogHeader>
                     <DialogTitle>Команда 1</DialogTitle>
                     <DialogDescription>
@@ -55,7 +55,7 @@ export function DialogDemo() {
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Сохранить изменения</Button>
+                    <Button type="submit" variant={"yellow"}>Сохранить изменения</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
