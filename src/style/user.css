@@ -21,8 +21,8 @@
 }*/
 
 .mainBlockUser{
-    width: 1300px;
-    min-height: 200px;
+    width: 95%;
+    min-height: 500px;
     margin-left: auto;
     margin-right: auto;
     border-radius: 25px;
@@ -95,15 +95,31 @@
     padding: 30px;
     padding-left: 20px;
     padding-right: 20px;
-    display: flex;
+    display: grid;
+    grid-template-columns: 3fr 2fr 0.5fr;
+
     align-items: center;
-    justify-content: space-between;
+    /*align-items: center;*/
+    /*justify-content: space-between;*/
     p{
-        text-align: right;
+        /*text-align: right;*/
+
     }
 
 }
 
+.divUser1{
+}
+.divUser2{
+    text-align: center;
+}
+.divUser3{
+
+}
+
+.hrTitle{
+    border-bottom: 1px solid black;
+}
 .nameUser{
     font-size: 1.5rem;
     font-weight: bold;

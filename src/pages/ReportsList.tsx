@@ -12,54 +12,6 @@ import {
 } from "@/components/ui/dialog"
 // import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
-export function DialogDemo() {
-    return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <img src={arrow} alt={"arrow right"} width={"60px"} className={"box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2)"}/>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[50%]">
-                <DialogHeader>
-                    <DialogTitle>Меню отчёта</DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">
-                            Автор отчёта:
-                        </Label>
-                        <p id="name" className="col-span-3">Сотрудник 1</p>
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="username" className="text-right">
-                            Дата формирования:
-                        </Label>
-                        <p id="name" className="col-span-3">01.01.2000</p>
-                    </div>
-                    <div className="grid items-center gap-4">
-                        <Label htmlFor="username" className="text-right">
-                            Выполненные задачи:
-                        </Label>
-                        <ol type={"1"}>
-                            <li>1. Задача 1</li>
-                            <li>2. Задача 2</li>
-                        </ol>
-                    </div>
-                    <div className="grid grid-cols-1 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">
-                            Комментарии сотрудника:
-                        </Label>
-                        <p id="name" className="col-span-3">Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст </p>
-                    </div>
-                </div>
-                <DialogFooter>
-                    <Button type="submit" variant={"yellow"}>Принять отчёт</Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    )
-}
-
 import {
     Select,
     SelectContent,
@@ -68,17 +20,65 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import React, {useEffect, useState} from "react";
+import axios from "axios";
 
-export function SelectDemo() {
+export function DialogDemo({userReport}) {
+
+    const readReport = (userReportId) => {
+        axios
+            .put(`http://localhost:5000/api/reports/accept/${userReportId}`)
+            .then((response) => {
+                console.log("Успешный запрос", response.data);
+                // setOpen(false);
+            })
+            .catch((error) => {
+                console.error("Ошибка запроса", error);
+            });
+    }
+
     return (
-        <Select>
+        <Dialog>
+            <DialogTrigger asChild>
+                <img src={arrow} alt={"arrow right"} width={"60px"} className={"box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2)"}/>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[40%] p-15">
+                <DialogHeader>
+                    <DialogTitle>Меню отчётов</DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-5 py-10">
+                    <div className="grid grid-cols-4 items-center gap-4 hrTitle">
+                        <p id="name" className="col-span-3">Отчитывающийся: {userReport.fname} {userReport.lname}</p>
+                    </div>
+                    <div className="grid items-center gap-4">
+                        <Label htmlFor="username" className="text-right">
+                            Выполненные задачи:
+                        </Label>
+                        <ol type={"1"}>
+                            <li>{userReport.content}</li>
+                        </ol>
+                    </div>
+                </div>
+                <DialogFooter>
+                    {userReport.check_report ? null : (
+                        <Button type="submit" variant={"yellow"} onClick={() => readReport(userReport.id)}>Отчёт прочитан</Button>
+                    )}
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+export function SelectDemo({onSelect}) {
+    return (
+        <Select onValueChange={onSelect}>
             <SelectTrigger className="w-[350px] h-[100%]">
-                <SelectValue placeholder="Не просмотренные"/>
+                <SelectValue placeholder="Запланировано"/>
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                    <SelectItem value="noWatched">Не просмотренные</SelectItem>
-                    <SelectItem value="watched">Просмотренные</SelectItem>
+                    <SelectItem value="noWatched">Запланировано</SelectItem>
+                    <SelectItem value="watched">Просмотрено</SelectItem>
                 </SelectGroup>
             </SelectContent>
         </Select>
@@ -86,30 +86,60 @@ export function SelectDemo() {
 }
 
 function ReportsList () {
+    const [userReport, setUserReport] = useState([]);
+    const [searchUserReport, setsearchUserReport] = useState("");
+    const [filter, setFilter] = useState("noWatched");
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:5000/api/reports")
+            .then((response) => {
+                setUserReport(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, []);
+
+    const filteredReports = userReport.filter(report => {
+        const matchesSearch = `${report.fname} ${report.lname}`.toLowerCase().includes(searchUserReport.toLowerCase());
+        const matchesFilter = filter === "watched" ? report.check_report : !report.check_report;
+        return matchesSearch && matchesFilter;
+    });
+
     return (
         <div>
             <div className={'mainBlockTeam'}>
                 <div className={'titleReport'}>
-                    <p>Список всех отчётов</p>
+                    <p>Отчёты</p>
                     <div className={'formSearch'}>
-                        <input type={'text'} className={'searchReport'} placeholder={'Поиск отчёта'}/>
-                        <button type={'submit'} className={'buttonSearch'}/>
+                        <input type={'text'} className={'searchReport'} placeholder={'Поиск отчёта'} onChange={(e) => setsearchUserReport(e.target.value)} />
+                        <button type={'submit'} className={'buttonSearch'} />
                     </div>
                     <div className={"selectReport"}>
-                        <SelectDemo />
+                        <SelectDemo onSelect={setFilter} />
                     </div>
                 </div>
                 <div className={'columnReport'}>
-                    <div className={'rowReport'}>
-                        <p className={'nameReport'} id={'nameReport'}>Сотрудник 1</p>
-                        <p>01.01.2000</p>
-                        <DialogDemo/>
-                    </div>
+                    {filteredReports.map(report => {
+                        const formattedDate = new Date(report.end_date).toLocaleDateString("ru-RU", {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        });
+
+                        return (
+                            <div className={'rowReport'} key={report.id}>
+                                <p className={'nameReport'} id={'nameReport'}>{report.fname} {report.lname}</p>
+                                <p>{formattedDate}</p>
+                                <DialogDemo userReport={report} />
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </div>
-    )
-        ;
+    );
 }
 
 export default ReportsList;

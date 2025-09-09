@@ -6,7 +6,7 @@ function Header(){
     return(
         <div className={'mainBlock mainBlockGrid'}>
             <div className={'border_block item_logo'}>
-                <NavLink to="/" className={''}><img src={'../../public/oggetto-logo_tonal-hor-rus.png'} alt={'oggetto'}/></NavLink>
+                <NavLink to="/users" className={''}><img src={'../../public/oggetto-logo_tonal-hor-rus.png'} alt={'oggetto'}/></NavLink>
             </div>
             <div className={'border_block item_nav'}>
                 <NavLink to="/users" className={({ isActive }) =>
@@ -21,7 +21,7 @@ function Header(){
                 <NavLink to="/reports_list" className={({ isActive }) =>
                     isActive ? "active" : undefined
                 }>Отчёты</NavLink>
-                <NavLink to="/" className={({ isActive }) =>
+                <NavLink to="/vacation_list" className={({ isActive }) =>
                     isActive ? "active" : undefined
                 }>Отпуска</NavLink>
             </div>

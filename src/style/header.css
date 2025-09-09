@@ -7,9 +7,10 @@
 
 .mainBlock{
     width: 100%;
-    height: 80px;
+    /*height: 80px;*/
     background-color: #FFED00;
     font-size: 18px;
+    /*border: 1px solid black;*/
 }
 
 .mainBlockGrid{
@@ -30,9 +31,10 @@
     padding-right: 15px;
     padding-top: 10px;
     margin-top: 10px; /* Отрицательный верхний отступ для смещения вниз */
-    border-radius: 30px 30px 0 0; /* Закругленные края */
+    border-radius: 20px 20px 0 0; /* Закругленные края */
     img{
         width: 100%;
+
     }
 }
 
@@ -71,7 +73,7 @@
     align-items: center;
     display: flex;
     margin-right: 10%;
-    margin-top: 10px;
+    /*margin-top: 10px;*/
 }
 
 .item_auth a {
@@ -96,5 +98,3 @@
 .titlePage{
     text-align: center;
 }
-
-
