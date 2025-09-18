@@ -8,7 +8,6 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog.tsx";
-import pencil from "@/assets/editUser.png";
 import arrow from "@/assets/right-arrow-upd.png";
 import {Label} from "@/components/ui/label.tsx";
 import delTeamUserButt from "@/assets/delTeamUser.png";
@@ -16,38 +15,44 @@ import {Button} from "@/components/ui/button.tsx";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {Calendar28} from "@/pages/VacationList.tsx";
+import { useNotification } from './Notification.tsx';
 
-export function DialogDemo({ user, tasks }) {
+export function DialogTask({ user, tasks, updateTasks }) {
     const [dateTask, setDateTask] = useState("");
     const [taskContent, setTaskContent] = useState("");
     const [isTyping, setIsTyping] = useState(false);
+    const { addNotification } = useNotification();
 
     const handleInputChange = (e) => {
         setTaskContent(e.target.value);
-        setIsTyping(e.target.value.length > 0); // Show calendar if input is not empty
+        setIsTyping(e.target.value.length > 0);
     };
 
     const handleSubmit = () => {
+        const todayDay = new Date();
         if (taskContent && dateTask) {
             const newTask = {
                 content: taskContent,
-                id_user: user.id, // Assuming user.id is the ID of the user
-                end_date: dateTask.toISOString() // Convert date to ISO string
+                id_user: user.id,
+                end_date: dateTask.toISOString(),
+                start_date: todayDay
             };
 
             axios.post('http://localhost:5000/api/tasks/new', newTask)
                 .then(response => {
                     console.log("Task added successfully:", response.data);
-                    // Optionally, reset the input and date
+                    updateTasks(user.id, newTask);
                     setTaskContent("");
                     setDateTask("");
                     setIsTyping(false);
+                    addNotification('success', 'Задача успешно добавлена');
                 })
                 .catch(error => {
-                    console.error("Error adding task:", error);
+                    console.error("Ошибка добавления задачи:", error);
+                    addNotification('error', 'Ошибка добавления задачи');
                 });
         } else {
-            alert("Пожалуйста, заполните все поля."); // Alert if fields are empty
+            alert("Пожалуйста, заполните все поля.");
         }
     };
 
@@ -68,13 +73,13 @@ export function DialogDemo({ user, tasks }) {
                         <Label htmlFor="username" className="text-right">
                             Предстоящие задачи:
                         </Label>
-                        <ol className={'liTeam'}>
+                        <ol className={'list-decimal liTeam'}>
                             {tasks.length > 0 ? (
                                 tasks.map((task, index) => (
                                     <li key={index}>{task.content}</li>
                                 ))
                             ) : (
-                                <li>Нет предстоящих задач</li>
+                                <p>Нет предстоящих задач</p>
                             )}
                         </ol>
                     </div>
@@ -91,12 +96,12 @@ export function DialogDemo({ user, tasks }) {
                     {isTyping && (
                         <Calendar28
                             plcHolder={"Срок задачи"}
-                            onChange={(date) => setDateTask(date)} // Set start date
+                            onChange={(date) => setDateTask(date)}
                         />
                     )}
                 </div>
                 <DialogFooter>
-                    <Button type="button" variant={"yellow"} onClick={handleSubmit}>Добавить задачу</Button>
+                    <Button type="button" className={'btnInteractive'} variant={"yellow"} onClick={handleSubmit}>Добавить задачу</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
@@ -106,18 +111,17 @@ export function DialogDemo({ user, tasks }) {
 function TasksList() {
     const [data, setData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [taskLists, setTaskLists] = useState({}); // Changed to store tasks
+    const [taskLists, setTaskLists] = useState({});
 
     useEffect(() => {
         axios
             .get("http://localhost:5000/api/users")
             .then((response) => {
                 setData(response.data);
-                // Fetch tasks for each user
                 const tasksPromises = response.data.map(user =>
                     axios.get(`http://localhost:5000/api/users/${user.id}/tasks`)
                         .then((taskResponse) => {
-                            return { id: user.id, tasks: taskResponse.data.user }; // Assuming the response contains an array of tasks
+                            return { id: user.id, tasks: taskResponse.data.user };
                         })
                 );
 
@@ -125,7 +129,7 @@ function TasksList() {
                     .then(results => {
                         const tasksMap = {};
                         results.forEach(result => {
-                            tasksMap[result.id] = result.tasks; // Store tasks by user ID
+                            tasksMap[result.id] = result.tasks;
                         });
                         setTaskLists(tasksMap);
                     })
@@ -142,6 +146,13 @@ function TasksList() {
         `${user.fname} ${user.lname}`.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const updateTasks = (userId, newTask) => {
+        setTaskLists(prev => ({
+            ...prev,
+            [userId]: [...(prev[userId] || []), newTask]
+        }));
+    };
+
     return (
         <div>
             <div className={'mainBlockUser'}>
@@ -153,7 +164,10 @@ function TasksList() {
                     </div>
                 </div>
                 <div className={'columnUser'}>
-                    {filteredUsers.map(user => (
+                    {filteredUsers.length === 0 ?(
+                        <p>Сотрудники отсутсвуют</p>
+                    ) : (
+                    filteredUsers.map(user => (
                         <div className={'rowUserTask'} key={user.id}>
                             <div className={'divUser1'}>
                                 <p className={'nameUser'} id={'nameUser'}>{user.fname} {user.lname}</p>
@@ -165,13 +179,15 @@ function TasksList() {
                                 <p>{user.post}</p>
                             </div>
                             <div className={'divUser3'}>
-                                <DialogDemo user={user} tasks={taskLists[user.id] || []}/> {/* Pass tasks to DialogDemo */}
+                                <DialogTask user={user} tasks={taskLists[user.id] || []} updateTasks={updateTasks}/>
                             </div>
                         </div>
-                    ))}
+                    ))
+                    )}
                 </div>
             </div>
         </div>
     );
 }
+
 export default TasksList;

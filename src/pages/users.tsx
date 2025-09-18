@@ -56,7 +56,7 @@ export function DialogDemo({user}) {
         <Dialog>
             <DialogTrigger asChild>
                 <img src={pencil} alt={"arrow right"} width={"60px"}
-                     className={"box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2)"}/>
+                     className={"box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) btnInteractive"}/>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[40%] p-15">
                 <DialogHeader>
@@ -123,7 +123,10 @@ function User() {
                     </div>
                 </div>
                 <div className={'columnUser'}>
-                    {filteredUsers.map(user => (
+                    {filteredUsers.length === 0 ?(
+                        <p>Сотрудники отсутсвуют</p>
+                    ) : (
+                    filteredUsers.map(user => (
                         <div className={'rowUser'} key={user.id}>
                             <div className={'divUser1'}>
                                 <p className={'nameUser'} id={'nameUser'}>{user.fname} {user.lname}</p>
@@ -135,7 +138,9 @@ function User() {
                                 <DialogDemo user={user}/>
                             </div>
                         </div>
-                    ))}
+                    ))
+                        )
+                    }
                 </div>
             </div>
         </div>

@@ -12,13 +12,17 @@
     background-image: url('../assets/addPlus.png');
     background-color: white;
     -webkit-transition: background-color 0.3s,
-    background-image 0.2s;
+                        background-image 0.2s;
+                        transition: 0.3s;
+}
+
+.addVacationButt:active{
+    transform: scale(0.9);
 }
 
 .addVacationButt:hover{
     background-color: #ffdd00;
     background-image: url('../assets/addPlusWhite.png');
-
 }
 
 .titleVacation{

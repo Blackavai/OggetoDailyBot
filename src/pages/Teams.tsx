@@ -17,7 +17,7 @@ import React, { useEffect, useState } from "react";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
 import {CheckIcon, ChevronsUpDownIcon} from "lucide-react";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command.tsx";
-import {cn} from "@/lib/utils.ts";
+import { useNotification } from './Notification.tsx';
 
 export function SelectUser({ selectedUsers, setSelectedUsers }) {
     const [users, setUsers] = useState([]);
@@ -37,10 +37,8 @@ export function SelectUser({ selectedUsers, setSelectedUsers }) {
     const handleSelectUser = (user) => {
         setSelectedUsers((prev) => {
             if (prev.some((u) => u.id === user.id)) {
-                // Remove user if already selected
                 return prev.filter((u) => u.id !== user.id);
             } else {
-                // Add user if not selected
                 return [...prev, user];
             }
         });
@@ -87,18 +85,19 @@ export function SelectUser({ selectedUsers, setSelectedUsers }) {
     );
 }
 
-export function DialogMenuTeam({ team, deleteTeam, updateTeamData }) {
+export function DialogMenuTeam({ team, deleteTeam, updateTeamData, refreshTeams }) {
     const [dataTeam, setDataTeam] = useState([]);
     const [open, setOpen] = useState(false);
     const [teamName, setTeamName] = useState(team.name_team);
     const [teamDescription, setTeamDescription] = useState(team.description_team);
-    const [selectNewUser, setSelectNewUder] = useState([]);
+    const [selectNewUser, setSelectNewUser] = useState([]);
+    const { addNotification } = useNotification();
 
     useEffect(() => {
         axios
             .get(`http://localhost:5000/api/teams/view/${team.id}`)
             .then((response) => {
-                console.log(response);
+                // console.log(response);
                 setDataTeam(response.data.view);
             })
             .catch((error) => {
@@ -108,36 +107,39 @@ export function DialogMenuTeam({ team, deleteTeam, updateTeamData }) {
 
     const deleteUserTeam = (id_user) => {
         axios
-            .post(`http://localhost:5000/api/teams/delUserTeam/${id_user}`)
+            .post(`http://localhost:5000/api/teams/delUserTeam/${team.id}/${id_user}`)
             .then((response) => {
-                console.log("Участник удален:", response.data);
+                // console.log("Участник удален:", response.data);
                 setDataTeam((prevData) => prevData.filter(member => member.id !== id_user));
+                addNotification('success', 'Участник удалён из команды');
             })
             .catch((error) => {
                 console.error("Ошибка при удалении участника:", error);
+                addNotification('error', 'Ошибка при удалении участника');
             });
-    }
+    };
 
-    const saveTeamData = (id_team) => {
-        axios
-            .put(`http://localhost:5000/api/teams/edit/${id_team}`, {
+    const saveTeamData = async (id_team) => {
+        try {
+            const response = await axios.put(`http://localhost:5000/api/teams/edit/${id_team}`, {
                 newNameTeam: teamName,
                 descriptionTeam: teamDescription,
-            })
-            .then((response) => {
-                return axios.post(`http://localhost:5000/api/teams/newUserTeam/${id_team}`, {
-                    usersId: selectNewUser.map(user => user.id), // Передаем только id новых пользователей
-                });
-            })
-            .then((userResponse) => {
-                console.log("Пользователи добавлены в команду:", userResponse.data);
-                console.log("Данные команды обновлены:", response.data);
-                updateTeamData({ id: id_team, name_team: teamName, description_team: teamDescription });
-                setOpen(false);
-            })
-            .catch((error) => {
-                console.error("Ошибка при сохранении данных команды:", error);
             });
+
+            const userResponse = await axios.post(`http://localhost:5000/api/teams/newUserTeam/${id_team}`, {
+                usersId: selectNewUser.map(user => user.id),
+            });
+
+            // console.log("Пользователи добавлены в команду:", userResponse.data);
+            addNotification('success', 'Пользователи добавлены в команду');
+            // console.log("Данные команды обновлены:", response.data);
+            addNotification('success', 'Данные команды обновлены');
+            updateTeamData({ id: id_team, name_team: teamName, description_team: teamDescription });
+            refreshTeams();
+        } catch (error) {
+            console.error("Ошибка при сохранении данных команды:", error);
+            addNotification('error', 'Ошибка при сохранении данных команды');
+        }
     };
 
     return (
@@ -173,44 +175,46 @@ export function DialogMenuTeam({ team, deleteTeam, updateTeamData }) {
                         <Label htmlFor="username" className="text-right">
                             Участники команды:
                         </Label>
-                        <ol className={'liTeam'}>
+                        <ol className={'liTeam list-decimal'}>
                             {dataTeam.length > 0 || selectNewUser.length > 0 ? (
                                 <>
-                                {dataTeam.map((member, index) => (
-                                    <li key={index}>
-                                        {member.fname + " " + member.lname}
-                                        <button onClick={() => deleteUserTeam(member.id)} key={member.id}>
-                                            <img src={delTeamUserButt} alt={''} className="w-6 h-6 "/>
-                                        </button>
-                                    </li>
-                                ))}
-                                {selectNewUser.map((member, index) => (
-                                    <li key={index}>
-                                        {member.fname + " " + member.lname}
-                                    </li>
-                                ))}
+                                    {dataTeam.map((member, index) => (
+                                        <li key={index}>
+                                            <span>{member.fname + " " + member.lname}</span>
+                                            <button onClick={() => deleteUserTeam(member.id)} key={member.id}>
+                                                <img src={delTeamUserButt} alt={''} className="w-6 h-6 "/>
+                                            </button>
+                                        </li>
+                                    ))}
+                                    {selectNewUser.map((member, index) => (
+                                        <li key={index} className={'flex justify-between'}>
+                                            {member.fname + " " + member.lname}
+                                        </li>
+                                    ))}
                                 </>
                             ) : (
                                 <li>Участников нет</li>
                             )}
                         </ol>
-                        <SelectUser selectedUsers={selectNewUser} setSelectedUsers={setSelectNewUder} />
+                        <SelectUser selectedUsers={selectNewUser} setSelectedUsers={setSelectNewUser} />
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit" variant={"yellow"} onClick={() => saveTeamData(team.id)}>Сохранить</Button>
-                    <Button type="submit" variant={"red"} onClick={() => deleteTeam(team.id)}>Удалить команду</Button>
+                    <Button type="submit" variant={"yellow"} className={'btnInteractive'} onClick={() => saveTeamData(team.id)}>Сохранить</Button>
+                    <Button type="submit" variant={"red"} className={'btnInteractive'} onClick={() => deleteTeam(team.id)}>Удалить команду</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
     );
 }
 
-export function DialogAddTeam() {
+
+export function DialogAddTeam({ refreshTeams }) {
     const [newUserTeam, setNewUserTeam] = useState([]);
     const [teamName, setTeamName] = useState('');
     const [teamDescription, setTeamDescription] = useState('');
     const [open, setOpen] = useState(false);
+    const { addNotification } = useNotification();
 
     const handleRemoveUser = (userId) => {
         setNewUserTeam((prev) => prev.filter((user) => user.id !== userId));
@@ -223,18 +227,21 @@ export function DialogAddTeam() {
                 descriptionTeam: teamDescription,
             })
             .then((response) => {
-                const id_team = response.data.task.id; // Получаем ID созданной команды
+                const id_team = response.data.task.id;
+                addNotification('success', 'Команда создана');
                 return axios.post(`http://localhost:5000/api/teams/newUserTeam/${id_team}`, {
                     usersId: newUserTeam.map(user => user.id),
                 });
             })
             .then((userResponse) => {
-                console.log("Пользователи добавлены в команду:", userResponse.data);
-                console.log("Данные команды обновлены:", userResponse.data);
-                setOpen(false); // Закрыть диалог после успешного сохранения
+                // console.log("Пользователи добавлены в команду:", userResponse.data);
+                refreshTeams();
+                setOpen(false);
+                addNotification('success', 'Пользователи добавлены в команду');
             })
             .catch((error) => {
                 console.error("Ошибка при сохранении данных команды:", error);
+                addNotification('error', 'Ошибка при сохранении данных команды');
             });
     };
 
@@ -281,7 +288,7 @@ export function DialogAddTeam() {
                                     <li key={user.id}>
                                         {user.fname} {user.lname}
                                         <button onClick={() => handleRemoveUser(user.id)}>
-                                            <img src={delTeamUserButt} alt={''} className="w-6 h-6 "/>
+                                            <img src={delTeamUserButt} alt={''} className="w-6 h-6 btnInteractive"/>
                                         </button>
                                     </li>
                                 ))}
@@ -291,18 +298,23 @@ export function DialogAddTeam() {
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="button" variant={"yellow"} onClick={addTeamData}>Сохранить</Button>
+                    <Button type="button" variant={"yellow"} onClick={addTeamData} className={'btnInteractive'}>Сохранить</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
     );
 }
 
+
 function Teams() {
     const [data, setData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
+        fetchTeams();
+    }, []);
+
+    const fetchTeams = () => {
         axios
             .get("http://localhost:5000/api/teams/")
             .then((response) => {
@@ -311,23 +323,20 @@ function Teams() {
             .catch((error) => {
                 console.log(error);
             });
-    }, []);
-
-    const filteredTeams = data.filter(user =>
-        `${user.name_team}`.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    };
 
     const deleteTeam = (id_team) => {
         axios
             .delete(`http://localhost:5000/api/teams/delete/${id_team}`)
             .then((response) => {
-                console.log("Участник удален:", response.data);
+                console.log("Команда удалена:", response.data);
                 setData((prevData) => prevData.filter(team => team.id !== id_team));
             })
             .catch((error) => {
                 console.error("Ошибка при удалении команды:", error);
             });
-    }
+    };
+
     const updateTeamData = (updatedTeam) => {
         setData((prevData) =>
             prevData.map(team =>
@@ -335,6 +344,7 @@ function Teams() {
             )
         );
     };
+
     return (
         <div>
             <div className={'mainBlockTeam'}>
@@ -351,23 +361,27 @@ function Teams() {
                         <button type={'submit'} className={'buttonSearch'} />
                     </div>
 
-                    <DialogAddTeam/>
+                    <DialogAddTeam refreshTeams={fetchTeams} />
                 </div>
                 <div className={'columnTeam'}>
-                    {filteredTeams.map(teams => (
-                    <div className={'rowTeam'}>
-                        <div>
-                            <p className={'nameTeam'} id={'nameTeam'}>{teams.name_team}</p>
+                    {data.length === 0 ?
+                        (
+                            <p>Команды отсутсвуют</p>
+                        ) : (
+                        data.filter(user => `${user.name_team}`.toLowerCase().includes(searchTerm.toLowerCase())).map(teams => (
+                        <div className={'rowTeam'} key={teams.id}>
+                            <div>
+                                <p className={'nameTeam'} id={'nameTeam'}>{teams.name_team}</p>
+                            </div>
+                            <DialogMenuTeam team={teams} deleteTeam={deleteTeam} updateTeamData={updateTeamData} refreshTeams={fetchTeams} />
                         </div>
-
-                        <DialogMenuTeam team={teams} deleteTeam={deleteTeam} updateTeamData={updateTeamData}/>
-                    </div>
-                    ))}
+                        ))
+                    )
+                    }
                 </div>
             </div>
         </div>
-    )
-        ;
+    );
 }
 
 export default Teams;
