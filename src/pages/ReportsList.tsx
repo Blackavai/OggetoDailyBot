@@ -25,6 +25,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 
 import { useNotification } from './Notification.tsx';
+import imgReportNone from "@/assets/reports_none.png";
 
 export function DialogReport({ userReport, setRefresh }) {
     const [open, setOpen] = useState(false);
@@ -48,7 +49,7 @@ export function DialogReport({ userReport, setRefresh }) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <img src={arrow} alt={"arrow right"} width={"60px"} className={"box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2)"}/>
+                <img src={arrow} alt={"arrow right"} width={"60px"} className={"box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) arrowAnim"}/>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[40%] p-15">
                 <DialogHeader>
@@ -66,10 +67,17 @@ export function DialogReport({ userReport, setRefresh }) {
                             <li>{userReport.content}</li>
                         </ol>
                     </div>
+                    <div className="grid items-center gap-4">
+                        <Label htmlFor="username" className="text-right">
+                            Содержание отчёта:
+                        </Label>
+                        <p>{userReport.text_report}</p>
+                    </div>
                 </div>
                 <DialogFooter>
                     {userReport.check_report ? null : (
-                        <Button type="submit" variant={"yellow"} className={'btnInteractive'} onClick={() => readReport(userReport.id)}>Отчёт прочитан</Button>
+                        <Button type="submit" variant={"yellow"} className={'btnInteractive'}
+                                onClick={() => readReport(userReport.id)}>Отчёт прочитан</Button>
                     )}
                 </DialogFooter>
             </DialogContent>
@@ -118,7 +126,7 @@ function ReportsList() {
 
     return (
         <div>
-            <div className={'mainBlockTeam'}>
+            <div className={'mainBlockReport'}>
                 <div className={'titleReport'}>
                     <p>Отчёты</p>
                     <div className={'formSearch'}>
@@ -131,11 +139,13 @@ function ReportsList() {
                 </div>
                 <div className={'columnReport'}>
                     {filteredReports.length === 0 ?(
-                        <p>Отчётов нет</p>
+                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                            <img src={imgReportNone} alt="Описание изображения" width={'600'}/>
+                        </div>
                     ) : (
-                    filteredReports.map(report => {
-                        const formattedDate = new Date(report.end_date).toLocaleDateString("ru-RU", {
-                            year: 'numeric',
+                        filteredReports.map(report => {
+                            const formattedDate = new Date(report.end_date).toLocaleDateString("ru-RU", {
+                                year: 'numeric',
                             month: '2-digit',
                             day: '2-digit'
                         });

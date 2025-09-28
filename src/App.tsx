@@ -8,6 +8,7 @@ import TasksList from './pages/TasksList.tsx';
 import ReportsList from './pages/ReportsList.tsx';
 import VacationList from './pages/VacationList.tsx';
 import AuthRedirect from './pages/AuthRedirect.tsx';
+import pages from './assets/404_not_found.png';
 import { Toaster } from 'sonner';
 import { NotificationProvider } from './pages/Notification.tsx';
 const App = () => {
@@ -25,7 +26,11 @@ const App = () => {
                     <Route path="/reports_list" element={<ReportsList />} />
                     <Route path="/vacation_list" element={<VacationList />} />
                 </Route>
-                <Route path="*" element={<h1>Такой страницы не существует</h1>} />
+                <Route path="*" element={
+                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                        <img src={pages} alt="Описание изображения" width={"1000"}/>
+                    </div>
+                }/>
             </Routes>
             </NotificationProvider>
         </>

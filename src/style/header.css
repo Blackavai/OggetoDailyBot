@@ -107,7 +107,6 @@
 .btnInteractive{
     transition: 0.3s;
 }
-
 .btnInteractive:active{
     transform: scale(0.9);
 }

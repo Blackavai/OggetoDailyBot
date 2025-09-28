@@ -28,6 +28,7 @@ import {
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import { cn } from "@/lib/utils"
 import { useNotification } from './Notification.tsx';
+import imgVacationNone from "@/assets/vacation_none.png";
 
 function formatDate(date: Date | undefined) {
     if (!date) {
@@ -139,7 +140,7 @@ export function SelectUser({ setUserId }) {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="Начните вводить ФИО"
-                className="col-span-3 outlineFocus hrTitle rounded-none focus:shadow-none w-full"
+                className="col-span-1 outlineFocus hrTitle rounded-none focus:shadow-none w-full"
             />
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
@@ -290,7 +291,9 @@ function VacationList() {
 
             <div className={'columnReport'}>
                 {upcomingUsers.length === 0 ? (
-                    <p>Нет сотрудников в отпуске</p>
+                    <div style={{display: 'flex', justifyContent: 'center'}}>
+                        <img src={imgVacationNone} alt="Описание изображения"  width={'500'}/>
+                    </div>
                 ) : (
                     upcomingUsers.map(user => {
                         const startDate = new Date(user.start_holiday);

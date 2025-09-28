@@ -18,6 +18,7 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.t
 import {CheckIcon, ChevronsUpDownIcon} from "lucide-react";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command.tsx";
 import { useNotification } from './Notification.tsx';
+import imgTeamNone from '@/assets/team_none.png';
 
 export function SelectUser({ selectedUsers, setSelectedUsers }) {
     const [users, setUsers] = useState([]);
@@ -145,14 +146,14 @@ export function DialogMenuTeam({ team, deleteTeam, updateTeamData, refreshTeams 
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <img src={arrow} alt={"arrow right"} width={"60px"} className={"box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2)"} />
+                <img src={arrow} alt={"arrow right"} width={"60px"} className={"box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) arrowAnim"} />
             </DialogTrigger>
             <DialogContent className="sm:max-w-[40%] p-15">
                 <DialogHeader>
                     <DialogTitle>Меню команды</DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4 hrTitle">
+                    <div className="grid items-center gap-4 hrTitle">
                         <input
                             id="name"
                             value={teamName}
@@ -255,7 +256,7 @@ export function DialogAddTeam({ refreshTeams }) {
                     <DialogTitle>Создание команды</DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4 hrTitle">
+                    <div className="grid items-center gap-4 hrTitle">
                         <input
                             id="name"
                             placeholder="Название"
@@ -264,11 +265,10 @@ export function DialogAddTeam({ refreshTeams }) {
                             onChange={(e) => setTeamName(e.target.value)}
                         />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4 hrTitle">
+                    <div className="grid items-center gap-4 hrTitle">
                         <Label htmlFor="username" className="text-right">
                             Описание:
                             <input
-                                id="username"
                                 placeholder="Введите описание"
                                 className="col-span-3 outlineFocus"
                                 value={teamDescription}
@@ -309,6 +309,7 @@ export function DialogAddTeam({ refreshTeams }) {
 function Teams() {
     const [data, setData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const { addNotification } = useNotification();
 
     useEffect(() => {
         fetchTeams();
@@ -329,11 +330,13 @@ function Teams() {
         axios
             .delete(`http://localhost:5000/api/teams/delete/${id_team}`)
             .then((response) => {
-                console.log("Команда удалена:", response.data);
+                // console.log("Команда удалена:", response.data);
                 setData((prevData) => prevData.filter(team => team.id !== id_team));
+                addNotification('success', 'Команда успешно удалена');
             })
             .catch((error) => {
                 console.error("Ошибка при удалении команды:", error);
+                addNotification('error', 'Ошибка при удалении команды');
             });
     };
 
@@ -366,10 +369,12 @@ function Teams() {
                 <div className={'columnTeam'}>
                     {data.length === 0 ?
                         (
-                            <p>Команды отсутсвуют</p>
+                            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                <img src={imgTeamNone} alt="Описание изображения" width={'500'}/>
+                            </div>
                         ) : (
-                        data.filter(user => `${user.name_team}`.toLowerCase().includes(searchTerm.toLowerCase())).map(teams => (
-                        <div className={'rowTeam'} key={teams.id}>
+                            data.filter(user => `${user.name_team}`.toLowerCase().includes(searchTerm.toLowerCase())).map(teams => (
+                                <div className={'rowTeam'} key={teams.id}>
                             <div>
                                 <p className={'nameTeam'} id={'nameTeam'}>{teams.name_team}</p>
                             </div>

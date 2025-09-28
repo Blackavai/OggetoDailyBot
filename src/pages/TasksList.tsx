@@ -16,6 +16,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {Calendar28} from "@/pages/VacationList.tsx";
 import { useNotification } from './Notification.tsx';
+import imgUsersNone from "@/assets/users_none.png";
 
 export function DialogTask({ user, tasks, updateTasks }) {
     const [dateTask, setDateTask] = useState("");
@@ -40,12 +41,16 @@ export function DialogTask({ user, tasks, updateTasks }) {
 
             axios.post('http://localhost:5000/api/tasks/new', newTask)
                 .then(response => {
-                    console.log("Task added successfully:", response.data);
-                    updateTasks(user.id, newTask);
-                    setTaskContent("");
-                    setDateTask("");
-                    setIsTyping(false);
-                    addNotification('success', 'Задача успешно добавлена');
+                    if (response.data.checkVacation) {
+                        addNotification('error', response.data.message);
+                    } else {
+                        console.log("Task added successfully:", response.data);
+                        updateTasks(user.id, newTask);
+                        setTaskContent("");
+                        setDateTask("");
+                        setIsTyping(false);
+                        addNotification('success', 'Задача успешно добавлена');
+                    }
                 })
                 .catch(error => {
                     console.error("Ошибка добавления задачи:", error);
@@ -59,7 +64,7 @@ export function DialogTask({ user, tasks, updateTasks }) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <img src={arrow} alt={"arrow right"} width={"60px"} className={"box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2)"}/>
+                <img src={arrow} alt={"arrow right"} width={"60px"} className={"box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) arrowAnim"}/>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[40%] p-15">
                 <DialogHeader>
@@ -83,7 +88,7 @@ export function DialogTask({ user, tasks, updateTasks }) {
                             )}
                         </ol>
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4 hrTitle py-2">
+                    <div className="grid items-center gap-4 hrTitle py-2">
                         <input
                             id="name"
                             type={'text'}
@@ -165,11 +170,13 @@ function TasksList() {
                 </div>
                 <div className={'columnUser'}>
                     {filteredUsers.length === 0 ?(
-                        <p>Сотрудники отсутсвуют</p>
+                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                            <img src={imgUsersNone} alt="Описание изображения" width={'600'}/>
+                        </div>
                     ) : (
-                    filteredUsers.map(user => (
-                        <div className={'rowUserTask'} key={user.id}>
-                            <div className={'divUser1'}>
+                        filteredUsers.map(user => (
+                            <div className={'rowUserTask'} key={user.id}>
+                                <div className={'divUser1'}>
                                 <p className={'nameUser'} id={'nameUser'}>{user.fname} {user.lname}</p>
                             </div>
                             <div className={'divUser2'}>

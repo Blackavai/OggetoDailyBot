@@ -10,7 +10,7 @@ function Header(){
     const { addNotification } = useNotification();
 
     const handleLogout = () => {
-        setUser(null); // Очищаем пользователя
+        setUser(""); // Очищаем пользователя
         setToken(null); // Очищаем токен
         Cookies.remove('userData'); // Удаляем куки пользователя
         Cookies.remove('token'); // Удаляем куки токена

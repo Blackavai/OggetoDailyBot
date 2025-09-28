@@ -1,4 +1,4 @@
-.mainBlockTeam{
+.mainBlockReport{
     width: 95%;
     min-height: 200px;
     margin-left: auto;
@@ -74,14 +74,18 @@
     /*background-color: white;*/
     /*border-radius: 10px;*/
     /*box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);*/
+    background-color: white;
+    box-shadow: 1px 5px 1px 1px rgba(0, 0, 0, 0.05);
+    border-radius: 25px;
     padding: 30px;
     padding-left: 20px;
     padding-right: 20px;
-    display: flex;
+    display: grid;
+    grid-template-columns: 3fr 1fr 0.2fr;
+    /*display: flex;*/
     align-items: center;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
 }
-
 .nameReport{
     font-size: 1.5rem;
     font-weight: bold;
@@ -89,4 +93,12 @@
 
 .descriptionReport{
     font-size: 1.2rem;
+}
+
+.arrowAnim{
+    transition: 0.3s;
+    cursor: pointer;
+}
+.arrowAnim:hover{
+    transform: translateX(5px);
 }

@@ -33,9 +33,9 @@
 
 .titleUser{
     display: grid;
-    grid-template-columns: 3fr 1fr 0.1fr;
+    grid-template-columns: 3fr 1fr 0.1fr 0.5fr;
     grid-template-areas:
-        "logo blank searchTeam";
+        "logo blank searchTeam addButton";
     border-bottom: 1px solid white;
     padding: 20px;
     p{
@@ -96,8 +96,10 @@
     padding-left: 20px;
     padding-right: 20px;
     display: grid;
-    grid-template-columns: 3fr 2fr 0.5fr;
-
+    grid-template-columns: 3fr 3fr 0.3fr;
+    background-color: white;
+    box-shadow: 1px 5px 1px 1px rgba(0, 0, 0, 0.05);
+    border-radius: 25px;
     align-items: center;
     /*align-items: center;*/
     /*justify-content: space-between;*/
@@ -144,6 +146,41 @@
     background-color: white;
     -webkit-transition: background-color 0.3s,
     background-image 0.2s;
+}
+
+.addUser:hover{
+    background-color: #ffdd00;
+    background-image: url('../assets/addUserHover.png');
+
+}
+
+.pencilAnim{
+    cursor: pointer;
+    transition: 0.3s;
+}
+.pencilAnim:hover{
+    transform: scale(1.1);
+}
+
+.addUser{
+    grid-area: addButton;
+    align-self: center;
+    justify-self: center;
+    width: 100px;
+    height: 50px;
+    border-radius: 15px;
+    background-size: 25%;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    background-image: url('../assets/addUser.png');
+    background-color: white;
+    -webkit-transition: background-color 0.3s,
+    background-image 0.2s;
+    transition: 0.3s;
+}
+.addUser:active{
+    transform: scale(0.9);
 }
 
 .addUser:hover{
