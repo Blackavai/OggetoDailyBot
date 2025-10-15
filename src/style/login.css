@@ -2,12 +2,15 @@
     display: flex;
     /*justify-content: space-between;*/
     /*margin-right: 50px;*/
-    margin-left: 50px;
+    /*margin-left: 50px;*/
+    max-width: 1900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .fixedSizeImage {
     width: 400px;
-    height: auto; /* Автоматическая высота для сохранения пропорций */
+    height: auto;
 }
 .loginMainBlock{
     /*background-color: #D9D9D9;*/
@@ -65,5 +68,36 @@
 
     button:hover{
         background-color: #ffdd00;
+    }
+}
+
+@media (max-width: 1024px){
+    .fixedSizeImage{
+        display: none;
+    }
+    .mainBlockLogin{
+        justify-content: center;
+    }
+    .inputLogin {
+
+        input {
+            font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
+            height: 60px;
+            width: 80%;
+        }
+
+        button{
+            font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
+            width: 50%;
+            height: 50px;
+
+        }
+
+        p{
+            font-size: calc(14px + 8 * (100vw - 320px) / 880);
+
+
+
+        }
     }
 }

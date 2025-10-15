@@ -30,3 +30,23 @@
 .arrowAnim:hover{
     transform: translateX(5px);
 }
+
+@media (max-width: 1024px) {
+    .rowUserTask{
+        p {
+            font-size: 3vw;
+        }
+    }
+
+}
+
+@media (max-width: 768px) {
+    .badgeVacUser {
+        width: 15%;
+        height: 15%;
+
+        span {
+            font-size: 20%;
+        }
+    }
+}

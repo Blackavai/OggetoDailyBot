@@ -7,17 +7,22 @@
 
 .mainBlock{
     width: 100%;
-    /*height: 80px;*/
+    height: 100%;
     background-color: #FFED00;
-    font-size: 18px;
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
     /*border: 1px solid black;*/
 }
-
+.adaptive{
+    max-width: 2000px;
+    margin-left: auto;
+    margin-right: auto;
+}
 .mainBlockGrid{
     display: grid;
     grid-template-columns: 0.5fr 0.3fr 2fr 1fr;
     grid-template-areas:
         "logo blank nav auth";
+
 }
 
 .item_logo{
@@ -109,4 +114,134 @@
 }
 .btnInteractive:active{
     transform: scale(0.9);
+}
+
+.sideBarHeader{
+    display: none;
+}
+
+.sidebar{
+    display: none;
+}
+
+.overlay{
+    visibility: hidden;
+}
+
+@media (max-width: 1024px) {
+    .mainBlock{
+    }
+
+    .item_nav{
+        display: none;
+    }
+
+    .mainBlockGrid{
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .item_auth{
+        display: none;
+    }
+
+    .item_logo{
+        max-width: 150px;
+        margin-left: 5%;
+        img {
+            height: auto;
+            min-width: 100px;
+        }
+    }
+
+    .sideBarHeader{
+        display: contents;
+        cursor: pointer;
+        img{
+            max-width: 50px;
+            height: auto;
+            margin-right: 5%;
+            margin-top: 10px;
+        }
+    }
+
+    .sidebar {
+        font-size: clamp(0.2rem, 0.9rem + 0.5vw, 1rem);
+
+        display: block;
+        position: fixed; /* Фиксированное положение */
+        top: 0;
+        right: -100%; /* Скрываем за пределами экрана */
+        width: 250px; /* Ширина сайдбара */
+        height: 100%; /* Высота сайдбара */
+        background-color: white; /* Цвет фона */
+        transition: right 0.3s ease; /* Анимация появления */
+        z-index: 1000; /* Чтобы он был поверх других элементов */
+        border-left: 1px solid rgba(0, 0, 0, 0.5);
+        overflow-y: auto; /* Прокрутка по вертикали */
+        padding-top: 10px; /* Отступ сверху */
+    }
+
+    .sidebar.active {
+        right: 0; /* Показать сайдбар */
+    }
+
+    .sidebar a {
+        display: block; /* Элементы будут на новой строке */
+        padding: 15px; /* Отступы для ссылок */
+        text-decoration: none;
+        color: black; /* Цвет текста */
+        transition: background-color 0.3s, color 0.3s; /* Плавное изменение фона и цвета */
+    }
+
+    .sidebar a:hover {
+        background-color: rgba(240, 240, 240, 0.5); /* Изменение цвета фона при наведении */
+        color: #FFED00; /* Изменение цвета текста при наведении */
+    }
+
+    .item_auth_sidebar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+    }
+
+    .sidebar_first_str {
+        width: 100%;
+        height: 60px;
+    }
+
+    .sidebar-close-icon {
+        position: absolute; /* Позиционируем иконку */
+        top: 10px; /* Располагаем на верхней границе */
+        right: 10px; /* Располагаем по правому краю */
+        cursor: pointer;
+        width: 25px;
+        height: auto;
+        margin-right: 5%;
+        margin-top: 10px;
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный цвет */
+        opacity: 0; /* Скрываем по умолчанию */
+        visibility: hidden; /* Скрываем элемент */
+        transition: opacity 0.3s ease, visibility 0.3s ease; /* Плавный переход */
+        z-index: 500; /* Задать уровень для затемнения */
+    }
+
+    .overlay.active {
+        opacity: 1; /* Показать затемнение */
+        visibility: visible; /* Сделать видимым элемент */
+    }
+
+    .adaptive{
+        margin-right: 0;
+        margin-left: 0;
+    }
 }

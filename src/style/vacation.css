@@ -45,3 +45,22 @@
         opacity: 70%;
     }
 }
+
+@media (max-width: 768px) {
+    .titleVacation{
+        display: flex;
+        flex-direction: column;
+
+        p{
+            font-size: 5vw;
+        }
+    }
+
+    .addVacationButt{
+        width: 20vw;
+        height: 10vw;
+    }
+
+    .rowReport{
+    }
+}

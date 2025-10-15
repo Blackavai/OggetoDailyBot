@@ -7,6 +7,7 @@
     background-color: #D9D9D9;
     padding: 30px;
     margin-top: 20px;
+    max-width: 1900px;
 }
 
 .titleTeam{
@@ -135,4 +136,47 @@
 }
 .arrowAnim:hover{
     transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+    .titleTeam {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .searchTeam {
+        width: 100%;
+    }
+
+    .columnTeam {
+        font-size: 20px; /* Уменьшение размера шрифта */
+    }
+
+    .rowTeam {
+        font-size: calc(14px + 8 * (100vw - 320px) / 880);
+    }
+
+    .adaptArrow{
+        width: 40px;
+    }
+
+    .nameTeam {
+        font-size: 1.2rem;
+    }
+
+    .descriptionTeam {
+        font-size: 1rem; /* Уменьшение размера шрифта для описания */
+    }
+
+    .mainBlockTeam {
+        padding: 15px; /* Уменьшаем отступы */
+    }
+
+    .titleTeam p {
+        font-size: calc(20px + 8 * (100vw - 320px) / 880); /* Уменьшение размера шрифта заголовка */
+    }
+
+    .liTeam li {
+
+    }
 }

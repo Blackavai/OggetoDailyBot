@@ -88,7 +88,7 @@ export function DialogReport({ userReport, setRefresh }) {
 export function SelectDemo({onSelect}) {
     return (
         <Select onValueChange={onSelect}>
-            <SelectTrigger className="w-[350px] h-[100%]">
+            <SelectTrigger className="w-[350px] h-[100%] selectReport">
                 <SelectValue placeholder="Запланировано"/>
             </SelectTrigger>
             <SelectContent>

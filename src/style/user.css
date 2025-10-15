@@ -29,6 +29,9 @@
     background-color: #D9D9D9;
     padding: 30px;
     margin-top: 20px;
+    max-width: 1900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .titleUser{
@@ -186,5 +189,33 @@
 .addUser:hover{
     background-color: #ffdd00;
     background-image: url('../assets/addUserHover.png');
+}
 
+@media (max-width: 768px) {
+    .titleUser{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .rowUser{
+        font-size: calc(14px + 8 * (100vw - 320px) / 880);
+    }
+
+    .nameUser{
+        font-size: calc(14px + 8 * (100vw - 320px) / 880);
+    }
+
+    .formSearch{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .titleUser{
+        p{
+            font-size: calc(20px + 8 * (100vw - 320px) / 880);
+        }
+    }
+    .searchUser{
+        width: 100%;
+    }
 }

@@ -142,7 +142,7 @@ export function SelectUser({ setUserId }) {
                 placeholder="Начните вводить ФИО"
                 className="col-span-1 outlineFocus hrTitle rounded-none focus:shadow-none w-full"
             />
-            <Popover open={open} onOpenChange={setOpen}>
+            <Popover open={open} onOpenChange={setOpen} modal={true}>
                 <PopoverTrigger asChild>
                     <Button
                         variant="ghost"
@@ -237,7 +237,8 @@ export function DialogAddVacation({ setRefresh }) {
                     <div>
                         <Calendar28
                             plcHolder={"Начало отпуска"}
-                            onChange={(date) => setStartDate(date)}/>
+                            onChange={(date) => setStartDate(date)}
+                        />
                     </div>
                     <div>
                         <Calendar28

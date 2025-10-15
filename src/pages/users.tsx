@@ -13,6 +13,7 @@ import {Button} from "@/components/ui/button.tsx";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import { useNotification } from './Notification.tsx';
 import imgUsersNone from "@/assets/users_none.png";
+import { Label } from "@/components/ui/label"
 
 export function DialogDemo({ user, onDelete }) {
     const [CheckTeam, setCheckTeam] = useState([]);
@@ -105,6 +106,7 @@ export function DialogAddUser() {
     const [fname, setFname] = useState("");
     const [lname, setLname] = useState("");
     const [tg_id, setTgId] = useState("");
+    const [pass, setPass] = useState("");
     const [post, setPost] = useState("");
     const [roleText, setRoleText] = useState(""); // Текстовое значение роли
     const [roleValue, setRoleValue] = useState(null); // Числовое значение роли
@@ -118,6 +120,7 @@ export function DialogAddUser() {
                 tg_id,
                 post,
                 role: roleValue,
+                pass,
             });
 
             addNotification('success', 'Пользователь добавлен в систему');
@@ -125,6 +128,7 @@ export function DialogAddUser() {
             setFname("");
             setLname("");
             setTgId("");
+            setPass("");
             setPost("");
             setRoleText("");
             setRoleValue(null);
@@ -143,70 +147,91 @@ export function DialogAddUser() {
                 <DialogHeader>
                     <DialogTitle>Меню добавления сотрудника</DialogTitle>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
+                <div className="grid gap-5 py-4">
                     <div className="grid grid-cols-1 items-center gap-4 hrTitle">
-                        <p>Имя: </p>
-                        <input
-                            type="text"
-                            className="col-span-3 outlineFocus"
-                            placeholder={'Введите имя сотрудника'}
-                            value={fname}
-                            onChange={(e) => setFname(e.target.value)}
-                        />
+                        <Label htmlFor="username" className="text-right ">
+                            Имя:
+                            <input
+                                type="text"
+                                className="col-span-3 outlineFocus w-full"
+                                placeholder={'Введите имя сотрудника'}
+                                value={fname}
+                                onChange={(e) => setFname(e.target.value)}
+                            />
+                        </Label>
                     </div>
                     <div className="grid grid-cols-1 items-center gap-4 hrTitle">
-                        <p>Фамилия: </p>
-                        <input
-                            type="text"
-                            className="col-span-3 outlineFocus"
-                            placeholder={'Введите фамилию сотрудника'}
-                            value={lname}
-                            onChange={(e) => setLname(e.target.value)}
-                        />
+                        <Label htmlFor="username" className="text-right ">
+                            Фамилия:
+                            <input
+                                type="text"
+                                className="col-span-3 outlineFocus w-full"
+                                placeholder={'Введите фамилию сотрудника'}
+                                value={lname}
+                                onChange={(e) => setLname(e.target.value)}
+                            />
+                        </Label>
                     </div>
                     <div className="grid grid-cols-1 items-center gap-4 hrTitle">
-                        <p>TG_id: </p>
-                        <input
-                            type="text"
-                            className="col-span-3 outlineFocus"
-                            placeholder={'Введите телеграм id сотрудника'}
-                            value={tg_id}
-                            onChange={(e) => setTgId(e.target.value)}
-                        />
+                        <Label htmlFor="username" className="text-right ">
+                            TG_id:
+                            <input
+                                type="text"
+                                className="col-span-3 outlineFocus w-full"
+                                placeholder={'Введите телеграм id сотрудника'}
+                                value={tg_id}
+                                onChange={(e) => setTgId(e.target.value)}
+                            />
+                        </Label>
                     </div>
                     <div className="grid grid-cols-1 items-center gap-4 hrTitle">
-                        <p>Роль: </p>
-                        <input
-                            type="text"
-                            className="col-span-3 outlineFocus"
-                            placeholder={'Frontend, Backend, Дизайнер, Тестировщик и т.п.'}
-                            value={post}
-                            onChange={(e) => setPost(e.target.value)}
-                        />
+                        <Label htmlFor="username" className="text-right ">
+                            Пароль:
+                            <input
+                                type="password"
+                                className="col-span-3 outlineFocus w-full"
+                                placeholder={'Введите пароль сотрудника'}
+                                value={pass}
+                                onChange={(e) => setPass(e.target.value)}
+                            />
+                        </Label>
                     </div>
                     <div className="grid grid-cols-1 items-center gap-4 hrTitle">
-                        <p>Должность:</p>
-                        <input
-                            type="text"
-                            className="col-span-3 outlineFocus"
-                            placeholder={'Работник или Менеджер'}
-                            value={roleText}
-                            onChange={(e) => {
-                                const value = e.target.value;
-
-                                // Устанавливаем текстовое значение роли
+                        <Label htmlFor="username" className="text-right ">
+                            Роль:
+                            <input
+                                type="text"
+                                className="col-span-3 outlineFocus w-full"
+                                placeholder={'Frontend, Backend, Дизайнер, Тестировщик и т.п.'}
+                                value={post}
+                                onChange={(e) => setPost(e.target.value)}
+                            />
+                        </Label>
+                    </div>
+                    <div className="grid grid-cols-1 items-center gap-4 hrTitle">
+                        <Label htmlFor="username" className="text-right ">
+                            Должность:
+                            <Select onValueChange={(value) => {
                                 setRoleText(value);
 
-                                // Устанавливаем числовое значение роли в зависимости от введенного текста
-                                if (value.toLowerCase() === "работник") {
-                                    setRoleValue(1);
-                                } else if (value.toLowerCase() === "менеджер") {
-                                    setRoleValue(2);
-                                } else {
-                                    setRoleValue(null); // Если введено что-то другое, сбрасываем значение
-                                }
-                            }}
-                        />
+                                const roleMapping = {
+                                    "менеджер": 1,
+                                    "работник": 2,
+                                };
+
+                                setRoleValue(roleMapping[value] || null); // Используем value вместо selectedValue
+                            }}>
+                                <SelectTrigger className="w-full border-none p-0 focus-visible:none">
+                                    <SelectValue placeholder="Работник или менеджер"/>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem value="работник">Работник</SelectItem>
+                                        <SelectItem value="менеджер">Менеджер</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </Label>
                     </div>
                 </div>
                 <DialogFooter>
@@ -222,7 +247,7 @@ export function DialogAddUser() {
 function User() {
     const [data, setData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const { addNotification } = useNotification();
+    const {addNotification} = useNotification();
 
     useEffect(() => {
         axios

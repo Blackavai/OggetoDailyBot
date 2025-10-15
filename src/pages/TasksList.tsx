@@ -17,6 +17,7 @@ import axios from "axios";
 import {Calendar28} from "@/pages/VacationList.tsx";
 import { useNotification } from './Notification.tsx';
 import imgUsersNone from "@/assets/users_none.png";
+import { Badge } from "@/components/ui/badge"
 
 export function DialogTask({ user, tasks, updateTasks }) {
     const [dateTask, setDateTask] = useState("");
@@ -72,7 +73,7 @@ export function DialogTask({ user, tasks, updateTasks }) {
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div className="grid-cols-1 items-center gap-4 hrTitle">
-                        <p>Сотрудник: {user.fname} {user.lname}</p>
+                        <p>Сотрудник: {user.fname} {user.lname} </p>
                     </div>
                     <div className="grid items-center gap-4">
                         <Label htmlFor="username" className="text-right">
@@ -117,6 +118,7 @@ function TasksList() {
     const [data, setData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [taskLists, setTaskLists] = useState({});
+    const [vacationStatus, setVacationStatus] = useState({}); // Local state for vacation status
 
     useEffect(() => {
         axios
@@ -130,13 +132,26 @@ function TasksList() {
                         })
                 );
 
-                Promise.all(tasksPromises)
-                    .then(results => {
+                const vacationPromises = response.data.map(user =>
+                    axios.get(`http://localhost:5000/api/users/${user.id}/vacation`)
+                        .then((vacationResponse) => {
+                            return { id: user.id, isOnVacation: vacationResponse.data.user };
+                        })
+                );
+
+                Promise.all([Promise.all(tasksPromises), Promise.all(vacationPromises)])
+                    .then(([tasksResults, vacationResults]) => {
                         const tasksMap = {};
-                        results.forEach(result => {
+                        tasksResults.forEach(result => {
                             tasksMap[result.id] = result.tasks;
                         });
                         setTaskLists(tasksMap);
+
+                        const vacationMap = {};
+                        vacationResults.forEach(result => {
+                            vacationMap[result.id] = result.isOnVacation;
+                        });
+                        setVacationStatus(vacationMap); // Assuming you have a state for vacation status
                     })
                     .catch((error) => {
                         console.log(error);
@@ -146,6 +161,7 @@ function TasksList() {
                 console.log(error);
             });
     }, []);
+
 
     const filteredUsers = data.filter(user =>
         `${user.fname} ${user.lname}`.toLowerCase().includes(searchTerm.toLowerCase())
@@ -158,6 +174,8 @@ function TasksList() {
         }));
     };
 
+
+
     return (
         <div>
             <div className={'mainBlockUser'}>
@@ -169,27 +187,32 @@ function TasksList() {
                     </div>
                 </div>
                 <div className={'columnUser'}>
-                    {filteredUsers.length === 0 ?(
+                    {filteredUsers.length === 0 ? (
                         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                             <img src={imgUsersNone} alt="Описание изображения" width={'600'}/>
                         </div>
                     ) : (
-                        filteredUsers.map(user => (
-                            <div className={'rowUserTask'} key={user.id}>
-                                <div className={'divUser1'}>
-                                <p className={'nameUser'} id={'nameUser'}>{user.fname} {user.lname}</p>
-                            </div>
-                            <div className={'divUser2'}>
-                                <p>Задач: {taskLists[user.id] ? taskLists[user.id].length : 0}</p>
-                            </div>
-                            <div className={'divUser2'}>
-                                <p>{user.post}</p>
-                            </div>
-                            <div className={'divUser3'}>
-                                <DialogTask user={user} tasks={taskLists[user.id] || []} updateTasks={updateTasks}/>
-                            </div>
-                        </div>
-                    ))
+                        filteredUsers.map(user => {
+                            return (
+                                <div className={'rowUserTask'} key={user.id}>
+                                    <div className={'divUser1 relative'}>
+                                        <p className={'nameUser'} id={'nameUser'}>
+                                            {user.fname} {user.lname}
+                                            {vacationStatus[user.id] !== "Отсутствует" && (<Badge className={"absolute h-4 badgeVacUser"}><span>В отпуске</span></Badge>)}
+                                        </p>
+                                    </div>
+                                    <div className={'divUser2'}>
+                                        <p>Задач: {taskLists[user.id] ? taskLists[user.id].length : 0}</p>
+                                    </div>
+                                    <div className={'divUser2'}>
+                                        <p>{user.post}</p>
+                                    </div>
+                                    <div className={'divUser3'}>
+                                        <DialogTask user={user} tasks={taskLists[user.id] || []} updateTasks={updateTasks}/>
+                                    </div>
+                                </div>
+                            );
+                        })
                     )}
                 </div>
             </div>

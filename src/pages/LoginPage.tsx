@@ -40,7 +40,7 @@ const LoginPage: React.FC = () => {
             navigate('/users');
         } catch (error) {
             console.log('Ошибка авторизации', error.response ? error.response.data : error.message);
-            addNotification('error', 'Ошибка авторизации');
+            addNotification('error', error.response.data.message);
         }
     };
 
@@ -106,7 +106,7 @@ const LoginPage: React.FC = () => {
         setIsQuestionVisible(false);
         setNewPassword('');
         setConfirmPassword('');
-        setIsAnswerCorrect(false); // Reset answer correctness
+        setIsAnswerCorrect(false);
     };
 
     return (
@@ -143,7 +143,7 @@ const LoginPage: React.FC = () => {
                                 <button className={'btnInteractive'} onClick={handleAnswerSubmit}>Подтвердить</button>
                             </>
                         )}
-                        {isAnswerCorrect && ( // Show password field only if the answer is correct
+                        {isAnswerCorrect && (
                             <>
                                 <input
                                     type={'password'}

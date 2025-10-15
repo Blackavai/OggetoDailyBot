@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label"
 import axios from 'axios';
 import React, { useEffect, useState } from "react";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
-import {CheckIcon, ChevronsUpDownIcon} from "lucide-react";
+import {CheckIcon} from "lucide-react";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command.tsx";
 import { useNotification } from './Notification.tsx';
 import imgTeamNone from '@/assets/team_none.png';
@@ -46,7 +46,7 @@ export function SelectUser({ selectedUsers, setSelectedUsers }) {
     };
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover open={open} onOpenChange={setOpen} modal={true}>
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
@@ -58,9 +58,9 @@ export function SelectUser({ selectedUsers, setSelectedUsers }) {
                     <p>Добавить</p>
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="p-0">
+            <PopoverContent className='p-0' side={"left"}>
                 <Command>
-                    <CommandInput placeholder="Начните вводить ФИО"/>
+                    <CommandInput placeholder="Начните вводить ФИО" />
                     <CommandList>
                         <CommandEmpty>Пользователь не найден</CommandEmpty>
                         <CommandGroup>
@@ -146,7 +146,7 @@ export function DialogMenuTeam({ team, deleteTeam, updateTeamData, refreshTeams 
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <img src={arrow} alt={"arrow right"} width={"60px"} className={"box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) arrowAnim"} />
+                <img src={arrow} alt={"arrow right "} width={"60px"} className={"box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) arrowAnim adaptArrow"} />
             </DialogTrigger>
             <DialogContent className="sm:max-w-[40%] p-15">
                 <DialogHeader>
@@ -361,7 +361,7 @@ function Teams() {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        <button type={'submit'} className={'buttonSearch'} />
+                        <button type={'submit'} className={'buttonSearch '} />
                     </div>
 
                     <DialogAddTeam refreshTeams={fetchTeams} />
@@ -374,7 +374,7 @@ function Teams() {
                             </div>
                         ) : (
                             data.filter(user => `${user.name_team}`.toLowerCase().includes(searchTerm.toLowerCase())).map(teams => (
-                                <div className={'rowTeam'} key={teams.id}>
+                        <div className={'rowTeam'} key={teams.id}>
                             <div>
                                 <p className={'nameTeam'} id={'nameTeam'}>{teams.name_team}</p>
                             </div>
