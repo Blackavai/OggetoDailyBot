@@ -37,9 +37,11 @@
     padding-top: 10px;
     margin-top: 10px; /* Отрицательный верхний отступ для смещения вниз */
     border-radius: 20px 20px 0 0; /* Закругленные края */
-    img{
-        width: 100%;
 
+    img{
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
     }
 }
 

@@ -33,7 +33,7 @@ export function DialogReport({ userReport, setRefresh }) {
 
     const readReport = (userReportId) => {
         axios
-            .put(`http://localhost:5000/api/reports/accept/${userReportId}`)
+            .put(`http://localhost:5001/api/reports/accept/${userReportId}`)
             .then((response) => {
                 // console.log("Успешный запрос", response.data);
                 setOpen(false);
@@ -109,7 +109,7 @@ function ReportsList() {
 
     useEffect(() => {
         axios
-            .get("http://localhost:5000/api/reports")
+            .get("http://localhost:5001/api/reports")
             .then((response) => {
                 setUserReport(response.data);
             })

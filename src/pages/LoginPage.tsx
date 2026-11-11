@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext.tsx';
 import '../style/login.css';
-import kevin from '../assets/kevinLogin.png';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from './Notification.tsx';
@@ -25,7 +24,7 @@ const LoginPage: React.FC = () => {
 
     const authFunc = async () => {
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/login', { tg_id, password }, { withCredentials: true });
+            const response = await axios.post('http://localhost:5001/api/auth/login', { tg_id, password }, { withCredentials: true });
             const token = response.data.user.token;
 
             if (!token) {
@@ -37,7 +36,12 @@ const LoginPage: React.FC = () => {
             Cookies.set('token', token);
             Cookies.set('userData', JSON.stringify(response.data.user));
             addNotification('success', 'Вы вошли в систему');
-            navigate('/users');
+            if(response.data.user.role == 1) {
+                navigate('/users');
+            }
+            if(response.data.user.role == 2) {
+                navigate('/tasks');
+            }
         } catch (error) {
             console.log('Ошибка авторизации', error.response ? error.response.data : error.message);
             addNotification('error', error.response.data.message);
@@ -46,7 +50,7 @@ const LoginPage: React.FC = () => {
 
     const handleRecovery = async () => {
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/recPass', { tg_id: recoveryTgId });
+            const response = await axios.post('http://localhost:5001/api/auth/recPass', { tg_id: recoveryTgId });
             if (response.data) {
                 setSecurityQuestion(response.data.recoverPassword.questions);
                 setIsQuestionVisible(true);
@@ -61,7 +65,7 @@ const LoginPage: React.FC = () => {
 
     const handleAnswerSubmit = async () => {
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/recAns', { tg_id: recoveryTgId, secAns: securityAnswer });
+            const response = await axios.post('http://localhost:5001/api/auth/recAns', { tg_id: recoveryTgId, secAns: securityAnswer });
             if (response.data) {
                 setIsAnswerCorrect(true); // Set answer correctness to true
                 setIsQuestionVisible(false); // Hide the question input
@@ -82,7 +86,7 @@ const LoginPage: React.FC = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/recPass/newPass', { tg_id: recoveryTgId, textNewPassword: newPassword });
+            const response = await axios.post('http://localhost:5001/api/auth/recPass/newPass', { tg_id: recoveryTgId, textNewPassword: newPassword });
             if (response.data.success) {
                 addNotification('success', 'Пароль успешно изменен');
                 navigate('/login'); // Redirect to login page
@@ -113,7 +117,7 @@ const LoginPage: React.FC = () => {
         <div className={'mainBlockLogin'}>
             <div className={'loginMainBlock'}>
                 <div className={'logoLogin'}>
-                    <img src={'../../oggetto-logo_tonal-hor-rus.png'} alt={'oggetto'} width={'250'} />
+                    <img src={'../../logo_itk.png'} alt={'itk'} width={'100'} />
                 </div>
                 {isRecoveryMode ? (
                     <div className={'inputLogin'}>
@@ -182,7 +186,6 @@ const LoginPage: React.FC = () => {
                     </div>
                 )}
             </div>
-            <img src={kevin} className={'fixedSizeImage'} />
         </div>
     );
 }

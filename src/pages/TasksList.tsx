@@ -40,7 +40,7 @@ export function DialogTask({ user, tasks, updateTasks }) {
                 start_date: todayDay
             };
 
-            axios.post('http://localhost:5000/api/tasks/new', newTask)
+            axios.post('http://localhost:5001/api/tasks/new', newTask)
                 .then(response => {
                     if (response.data.checkVacation) {
                         addNotification('error', response.data.message);
@@ -122,18 +122,18 @@ function TasksList() {
 
     useEffect(() => {
         axios
-            .get("http://localhost:5000/api/users")
+            .get("http://localhost:5001/api/users")
             .then((response) => {
                 setData(response.data);
                 const tasksPromises = response.data.map(user =>
-                    axios.get(`http://localhost:5000/api/users/${user.id}/tasks`)
+                    axios.get(`http://localhost:5001/api/users/${user.id}/tasks`)
                         .then((taskResponse) => {
                             return { id: user.id, tasks: taskResponse.data.user };
                         })
                 );
 
                 const vacationPromises = response.data.map(user =>
-                    axios.get(`http://localhost:5000/api/users/${user.id}/vacation`)
+                    axios.get(`http://localhost:5001/api/users/${user.id}/vacation`)
                         .then((vacationResponse) => {
                             return { id: user.id, isOnVacation: vacationResponse.data.user };
                         })

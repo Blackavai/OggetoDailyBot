@@ -8,6 +8,7 @@ import TasksList from './pages/TasksList.tsx';
 import ReportsList from './pages/ReportsList.tsx';
 import VacationList from './pages/VacationList.tsx';
 import AuthRedirect from './pages/AuthRedirect.tsx';
+import TasksEmploye from './pages/TasksEmploye.tsx';
 import pages from './assets/404_not_found.png';
 import { Toaster } from 'sonner';
 import { NotificationProvider } from './pages/Notification.tsx';
@@ -25,6 +26,7 @@ const App = () => {
                     <Route path="/tasks_list" element={<TasksList />} />
                     <Route path="/reports_list" element={<ReportsList />} />
                     <Route path="/vacation_list" element={<VacationList />} />
+                    <Route path="/tasks" element={<TasksEmploye />} />
                 </Route>
                 <Route path="*" element={
                     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>

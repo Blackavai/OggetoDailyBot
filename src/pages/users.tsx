@@ -22,7 +22,7 @@ export function DialogDemo({ user, onDelete }) {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:5000/api/users/${user.id}/team`)
+            .get(`http://localhost:5001/api/users/${user.id}/team`)
             .then((response) => {
                 setCheckTeam(response.data);
             })
@@ -33,7 +33,7 @@ export function DialogDemo({ user, onDelete }) {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:5000/api/users/${user.id}/vacation`)
+            .get(`http://localhost:5001/api/users/${user.id}/vacation`)
             .then((response) => {
                 setCheckVac(response.data.user);
             })
@@ -44,7 +44,7 @@ export function DialogDemo({ user, onDelete }) {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:5000/api/users/${user.id}/tasks`)
+            .get(`http://localhost:5001/api/users/${user.id}/tasks`)
             .then((response) => {
                 setCheckTask(response.data.user);
             })
@@ -114,7 +114,7 @@ export function DialogAddUser() {
 
     const addUserData = async () => {
         try {
-            const response = await axios.post(`http://localhost:5000/api/auth/createUser`, {
+            const response = await axios.post(`http://localhost:5001/api/auth/createUser`, {
                 fname,
                 lname,
                 tg_id,
@@ -251,7 +251,7 @@ function User() {
 
     useEffect(() => {
         axios
-            .get("http://localhost:5000/api/users")
+            .get("http://localhost:5001/api/users")
             .then((response) => {
                 setData(response.data);
             })
@@ -262,7 +262,7 @@ function User() {
 
     const deleteUser = async (userId) => {
         try {
-            await axios.delete(`http://localhost:5000/api/auth/delUser/${userId}`);
+            await axios.delete(`http://localhost:5001/api/auth/delUser/${userId}`);
             // Update the user list after deletion
             setData((prevData) => prevData.filter(user => user.id !== userId));
             addNotification('success', 'Сотрудник удалён из системы');

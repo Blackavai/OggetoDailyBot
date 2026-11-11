@@ -10,6 +10,9 @@ function Header() {
     const { addNotification } = useNotification();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+    // Проверяем, является ли пользователь админом (роль 1)
+    const isAdmin = user?.role === 1;
+
     const handleLogout = () => {
         setUser("");
         setToken(null);
@@ -17,32 +20,68 @@ function Header() {
         Cookies.remove('token');
         Cookies.remove('tokenExpiration');
         addNotification('success', 'Вы вышли из системы');
-        toggleSidebar();
+        setIsSidebarOpen(false);
     };
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
+    // Компонент навигации — переиспользуем в десктопе и сайдбаре
+    const NavigationLinks = ({ onClick }: { onClick?: () => void }) => (
+        <>
+            <NavLink 
+                to="/users" 
+                className={({isActive}) => isActive ? "active" : undefined}
+                onClick={onClick}
+            >
+                Сотрудники
+            </NavLink>
+            <NavLink 
+                to="/teams" 
+                className={({isActive}) => isActive ? "active" : undefined}
+                onClick={onClick}
+            >
+                Команды
+            </NavLink>
+            <NavLink 
+                to="/tasks_list" 
+                className={({isActive}) => isActive ? "active" : undefined}
+                onClick={onClick}
+            >
+                Задачи
+            </NavLink>
+            <NavLink 
+                to="/reports_list" 
+                className={({isActive}) => isActive ? "active" : undefined}
+                onClick={onClick}
+            >
+                Отчёты
+            </NavLink>
+            <NavLink 
+                to="/vacation_list" 
+                className={({isActive}) => isActive ? "active" : undefined}
+                onClick={onClick}
+            >
+                Отпуска
+            </NavLink>
+        </>
+    );
+
     return (
         <div className={'mainBlock'}>
             <div className={'adaptive mainBlockGrid'}>
                 <div className={'border_block item_logo'}>
                     <NavLink to="/users">
-                        <img src={'../../oggetto-logo_tonal-hor-rus.png'} alt={'oggetto'}/>
+                        <img src={'../../logo_itk.png'} alt={'oggetto'}/>
                     </NavLink>
                 </div>
+                
+                {/* Десктопная навигация — показываем только админам */}
                 <div className={'border_block item_nav'}>
-                    <NavLink to="/users"
-                             className={({isActive}) => isActive ? "active" : undefined}>Сотрудники</NavLink>
-                    <NavLink to="/teams" className={({isActive}) => isActive ? "active" : undefined}>Команды</NavLink>
-                    <NavLink to="/tasks_list"
-                             className={({isActive}) => isActive ? "active" : undefined}>Задачи</NavLink>
-                    <NavLink to="/reports_list"
-                             className={({isActive}) => isActive ? "active" : undefined}>Отчёты</NavLink>
-                    <NavLink to="/vacation_list"
-                             className={({isActive}) => isActive ? "active" : undefined}>Отпуска</NavLink>
+                    {isAdmin && <NavigationLinks />}
                 </div>
+                
                 <div className={'border_block item_auth'}>
                     {user ? (
                         <>
@@ -69,6 +108,7 @@ function Header() {
                 </div>
             </div>
 
+            {/* Мобильное меню — навигация только для админов */}
             <div className={`sidebar ${isSidebarOpen ? 'active' : ''}`}>
                 <img
                     src={'../../close_sidebar.png'}
@@ -76,11 +116,9 @@ function Header() {
                     onClick={toggleSidebar}
                 />
                 <div className={'sidebar_first_str'}></div>
-                <NavLink to="/users" onClick={toggleSidebar}>Сотрудники</NavLink>
-                <NavLink to="/teams" onClick={toggleSidebar}>Команды</NavLink>
-                <NavLink to="/tasks_list" onClick={toggleSidebar}>Задачи</NavLink>
-                <NavLink to="/reports_list" onClick={toggleSidebar}>Отчёты</NavLink>
-                <NavLink to="/vacation_list" onClick={toggleSidebar}>Отпуска</NavLink>
+                
+                {isAdmin && <NavigationLinks onClick={toggleSidebar} />}
+                
                 <div className={'border_block item_auth_sidebar'}>
                     {user ? (
                         <>
@@ -98,6 +136,7 @@ function Header() {
                     )}
                 </div>
             </div>
+            
             <div
                 className={`overlay ${isSidebarOpen ? 'active' : ''}`}
                 onClick={toggleSidebar}

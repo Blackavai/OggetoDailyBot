@@ -124,7 +124,7 @@ export function SelectUser({ setUserId }) {
 
     useEffect(() => {
         axios
-            .get("http://localhost:5000/api/users")
+            .get("http://localhost:5001/api/users")
             .then((response) => {
                 setUsers(response.data);
             })
@@ -207,7 +207,7 @@ export function DialogAddVacation({ setRefresh }) {
         };
 
         axios
-            .post(`http://localhost:5000/api/users/vacation/${userId}`, vacationData)
+            .post(`http://localhost:5001/api/users/vacation/${userId}`, vacationData)
             .then((response) => {
                 // console.log("Отпуск добавлен:", response.data);
                 setUserId("");
@@ -263,7 +263,7 @@ function VacationList() {
 
     useEffect(() => {
         axios
-            .get("http://localhost:5000/api/users/vacation/view")
+            .get("http://localhost:5001/api/users/vacation/view")
             .then((response) => {
                 // console.log(response.data); // Логируем данные
                 setUsers(response.data.user); // Извлекаем массив пользователей

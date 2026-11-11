@@ -26,7 +26,7 @@ export function SelectUser({ selectedUsers, setSelectedUsers }) {
 
     useEffect(() => {
         axios
-            .get("http://localhost:5000/api/users")
+            .get("http://localhost:5001/api/users")
             .then((response) => {
                 setUsers(response.data);
             })
@@ -96,7 +96,7 @@ export function DialogMenuTeam({ team, deleteTeam, updateTeamData, refreshTeams 
 
     useEffect(() => {
         axios
-            .get(`http://localhost:5000/api/teams/view/${team.id}`)
+            .get(`http://localhost:5001/api/teams/view/${team.id}`)
             .then((response) => {
                 // console.log(response);
                 setDataTeam(response.data.view);
@@ -108,7 +108,7 @@ export function DialogMenuTeam({ team, deleteTeam, updateTeamData, refreshTeams 
 
     const deleteUserTeam = (id_user) => {
         axios
-            .post(`http://localhost:5000/api/teams/delUserTeam/${team.id}/${id_user}`)
+            .post(`http://localhost:5001/api/teams/delUserTeam/${team.id}/${id_user}`)
             .then((response) => {
                 // console.log("Участник удален:", response.data);
                 setDataTeam((prevData) => prevData.filter(member => member.id !== id_user));
@@ -122,12 +122,12 @@ export function DialogMenuTeam({ team, deleteTeam, updateTeamData, refreshTeams 
 
     const saveTeamData = async (id_team) => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/teams/edit/${id_team}`, {
+            const response = await axios.put(`http://localhost:5001/api/teams/edit/${id_team}`, {
                 newNameTeam: teamName,
                 descriptionTeam: teamDescription,
             });
 
-            const userResponse = await axios.post(`http://localhost:5000/api/teams/newUserTeam/${id_team}`, {
+            const userResponse = await axios.post(`http://localhost:5001/api/teams/newUserTeam/${id_team}`, {
                 usersId: selectNewUser.map(user => user.id),
             });
 
@@ -223,14 +223,14 @@ export function DialogAddTeam({ refreshTeams }) {
 
     const addTeamData = () => {
         axios
-            .post(`http://localhost:5000/api/teams/create`, {
+            .post(`http://localhost:5001/api/teams/create`, {
                 nameTeam: teamName,
                 descriptionTeam: teamDescription,
             })
             .then((response) => {
                 const id_team = response.data.task.id;
                 addNotification('success', 'Команда создана');
-                return axios.post(`http://localhost:5000/api/teams/newUserTeam/${id_team}`, {
+                return axios.post(`http://localhost:5001/api/teams/newUserTeam/${id_team}`, {
                     usersId: newUserTeam.map(user => user.id),
                 });
             })
@@ -317,7 +317,7 @@ function Teams() {
 
     const fetchTeams = () => {
         axios
-            .get("http://localhost:5000/api/teams/")
+            .get("http://localhost:5001/api/teams/")
             .then((response) => {
                 setData(response.data);
             })
@@ -328,7 +328,7 @@ function Teams() {
 
     const deleteTeam = (id_team) => {
         axios
-            .delete(`http://localhost:5000/api/teams/delete/${id_team}`)
+            .delete(`http://localhost:5001/api/teams/delete/${id_team}`)
             .then((response) => {
                 // console.log("Команда удалена:", response.data);
                 setData((prevData) => prevData.filter(team => team.id !== id_team));
